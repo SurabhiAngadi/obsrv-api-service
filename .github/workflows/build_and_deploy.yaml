@@ -26,17 +26,15 @@ jobs:
           (echo -n TRIGGER_ALLOWED= && echo 'print("${{ github.ref_name }}".split("_")[0] not in "${{ vars.CURRENT_RELEASE }}")' | python3) >> "$GITHUB_OUTPUT" 
 
   delete-tags:
-    needs: verify-tag
     runs-on: ubuntu-latest
-    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True'
     steps:
-      - name: Delete tag from Docker
-        run: |
-          #!/bin/bash
-          # Script to delete a Docker Hub image tags    
-          DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
-          docker run --rm -it lumir/remove-dockerhub-tag --user ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD} ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
+      - uses: alesharik/delete-old-docker-tags@v0.0.2
+        with:
+          registry: https://registry.url
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ secrets.DOCKER_USERNAME }}
+          version-extractor: "*"
 
   build-api-service-image:
     needs: verify-tag
