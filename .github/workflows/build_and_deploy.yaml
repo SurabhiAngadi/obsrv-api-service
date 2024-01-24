@@ -27,21 +27,22 @@ jobs:
         run: |
           (echo -n TRIGGER_ALLOWED= && echo 'print("${{ github.ref_name }}".split("_")[0] not in "${{ vars.CURRENT_RELEASE }}")' | python3) >> "$GITHUB_OUTPUT" 
 
-  # delete-tags:
-  #   runs-on: ubuntu-latest
-  #   if: github.event.input.delete-tag == 'True'
-  #   steps:
-  #     - name: Delete tag from Docker
-  #       run: |
-  #         #!/bin/bash
-  #         # Script to delete a Docker Hub image tag     
-  #         DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }}
-  #         DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
-  #         docker run --rm -it lumir/remove-dockerhub-tag --user ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD} ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
+  delete-tags:
+    needs: verify-tag
+    runs-on: ubuntu-latest
+    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.input.delete-tag == 'True'
+    steps:
+      - name: Delete tag from Docker
+        run: |
+          #!/bin/bash
+          # Script to delete a Docker Hub image tag     
+          DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
+          docker run --rm -it lumir/remove-dockerhub-tag --user ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD} ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
 
   build-api-service-image:
     needs: verify-tag
-    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True'
+    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.input.delete-tag != 'True'
     runs-on: ubuntu-latest
     steps:
       - name: Login to docker hub
@@ -59,7 +60,7 @@ jobs:
 
   # build-command-service-image:
   #   needs: verify-tag
-  #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True'
+  #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.input.delete-tag != 'True'
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Login to docker hub
@@ -79,7 +80,7 @@ jobs:
 
   # aws-deploy:
   #   needs: [verify-tag, build-api-service-image, build-command-service-image]
-  #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.inputs.aws-deploy == 'true'
+  #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.inputs.aws-deploy == 'true' && github.event.input.delete-tag != 'True'
   #   runs-on: ubuntu-latest
   #   environment: aws-dev
   #   steps:
@@ -125,7 +126,7 @@ jobs:
 
   # azure-deploy:
   #   needs: [verify-tag, build-api-service-image, build-command-service-image]
-  #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && vars.CLOUD_PROVIDER == 'azure'
+  #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && vars.CLOUD_PROVIDER == 'azure' && github.event.input.delete-tag != 'True'
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Clone the terraform deployment repo
