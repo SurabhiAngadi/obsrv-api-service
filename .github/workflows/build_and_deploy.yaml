@@ -35,7 +35,7 @@ jobs:
       - name: Delete tag from Docker
         run: |
           #!/bin/bash
-          # Script to delete a Docker Hub image tag     
+          # Script to delete a Docker Hub image tags    
           DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
           docker run --rm -it lumir/remove-dockerhub-tag --user ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD} ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
