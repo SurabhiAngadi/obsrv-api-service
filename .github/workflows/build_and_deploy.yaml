@@ -34,7 +34,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ secrets.DOCKER_USERNAME }}
-          version-extractor: "*"
+          version-extractor: '*'
 
   build-api-service-image:
     needs: verify-tag
