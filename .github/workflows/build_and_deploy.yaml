@@ -1,22 +1,18 @@
 name: API Service
 run-name: Workflow run for ${{ github.ref }}
 on:
+  delete:
   push:
     tags:
       - "*"
+
   workflow_dispatch:
     inputs:
       aws-deploy:
         type: boolean
         required: true
         default: false
-  delete:
-    tags:
-      - "*"
-    inputs:
-      delete-tag:
-        required: true
-        default: true
+  
 
 jobs:
   verify-tag:
