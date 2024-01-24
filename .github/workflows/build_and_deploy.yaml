@@ -28,7 +28,7 @@ jobs:
   delete-tags:
     needs: verify-tag
     runs-on: ubuntu-latest
-    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.input.delete-tag == 'True'
+    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True'
     steps:
       - name: Delete tag from Docker
         run: |
