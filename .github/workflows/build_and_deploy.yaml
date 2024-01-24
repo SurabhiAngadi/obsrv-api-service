@@ -11,6 +11,8 @@ on:
         required: true
         default: false
   delete:
+    tags:
+      - "*"
     inputs:
       delete-tag:
         required: true
