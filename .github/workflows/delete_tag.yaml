@@ -26,15 +26,16 @@ jobs:
       
         - name: Delete DockerHub Tag
           run: |
-            DOCKERHUB_USERNAME="${{ vars.DOCKERHUB_USERNAME }}"
-            DOCKERHUB_PASSWORD="${{ secrets.DOCKERHUB_PASSWORD }}"
+            UNAME="${{ vars.DOCKERHUB_USERNAME }}"
+            UPASS="${{ secrets.DOCKERHUB_PASSWORD }}"
             REPO_NAME="${{ vars.DOCKERHUB_USERNAME }}"
             IMAGE_NAME="obsrv-api-service"
             TAG_NAME=test-tag
-
+            
             # Get dockerhub token
-            DOCKERHUB_TOKEN=$(curl -sS -H "Content-Type: application/json" -X POST -d '{"username": "'$DOCKERHUB_USERNAME'", "password": "'$DOCKERHUB_PASSWORD'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
-  
+            TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "'${UNAME}'", "password": "'${UPASS}'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
+            echo ${TOKEN}  
+
             # Get the image digest
             DIGEST=$(curl -sS -H "Authorization: Bearer $(curl -sS -H "Content-Type: application/json" -X POST -d '{"username": "'$DOCKERHUB_USERNAME'", "password": "'$DOCKERHUB_PASSWORD'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)" -H "Accept: application/vnd.docker.distribution.manifest.v2+json" https://hub.docker.com/v2/repositories/${REPO_NAME}/${IMAGE_NAME}/manifests/${TAG_NAME} | jq -r .config.digest)
   
