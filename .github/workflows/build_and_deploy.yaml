@@ -1,11 +1,10 @@
 name: API Service
 run-name: Workflow run for ${{ github.ref }}
 on:
-  delete:
   push:
     tags:
       - "*"
-
+  delete:
   workflow_dispatch:
     inputs:
       aws-deploy:
@@ -26,14 +25,16 @@ jobs:
           (echo -n TRIGGER_ALLOWED= && echo 'print("${{ github.ref_name }}".split("_")[0] not in "${{ vars.CURRENT_RELEASE }}")' | python3) >> "$GITHUB_OUTPUT" 
 
   delete-tags:
+    needs: verify-tag
+    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True'
     runs-on: ubuntu-latest
     steps:
       - uses: alesharik/delete-old-docker-tags@v0.0.2
         with:
           registry: https://registry.url
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: ${{ vars.DOCKERHUB_USERNAME }}
           version-extractor: '*'
 
   build-api-service-image:
