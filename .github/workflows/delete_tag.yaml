@@ -26,9 +26,9 @@ jobs:
       
         - name: Delete DockerHub Tag
           run: |
-            DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }}
-            DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
-            REPO_NAME=${{ vars.DOCKERHUB_USERNAME }}
+            DOCKERHUB_USERNAME="${{ vars.DOCKERHUB_USERNAME }}"
+            DOCKERHUB_PASSWORD="${{ secrets.DOCKERHUB_PASSWORD }}"
+            REPO_NAME="${{ vars.DOCKERHUB_USERNAME }}"
             IMAGE_NAME="obsrv-api-service"
             TAG_NAME=test-tag
 
