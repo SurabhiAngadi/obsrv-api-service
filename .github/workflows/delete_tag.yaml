@@ -8,6 +8,7 @@ on:
 jobs:
   delete-tags:
       runs-on: ubuntu-latest
+      if: github.event_name == 'delete'
       steps:
         - name: Login to docker hub
           uses: docker/login-action@v2
@@ -15,8 +16,26 @@ jobs:
             username: ${{ vars.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-        - name: Run script file
+        - name: Checkout repository
+          uses: actions/checkout@v2
+      
+        - name: Delete DockerHub Tag
           run: |
             DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }}
             DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
-            docker run --rm -it lumir/remove-dockerhub-tag --user ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD} ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}      
+            REPO_NAME=${{ vars.DOCKERHUB_USERNAME }}
+            IMAGE_NAME="obsrv-api-service"
+            TAG_NAME=test-tag
+  
+            # Get the image digest
+            DIGEST=$(curl -sS -H "Authorization: Bearer $(curl -sS -H "Content-Type: application/json" -X POST -d '{"username": "'$DOCKERHUB_USERNAME'", "password": "'$DOCKERHUB_PASSWORD'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)" -H "Accept: application/vnd.docker.distribution.manifest.v2+json" https://hub.docker.com/v2/repositories/${REPO_NAME}/${IMAGE_NAME}/manifests/${TAG_NAME} | jq -r .config.digest)
+  
+            # Delete the image manifest
+            curl -X DELETE -H "Authorization: Bearer $(curl -sS -H "Content-Type: application/json" -X POST -d '{"username": "'$DOCKERHUB_USERNAME'", "password": "'$DOCKERHUB_PASSWORD'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)" https://hub.docker.com/v2/repositories/${REPO_NAME}/${IMAGE_NAME}/manifests/${DIGEST}
+
+        # - name: Run script file
+        #   run: |
+        #     DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }}
+        #     DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
+        #     docker run --rm -it lumir/remove-dockerhub-tag --user ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD} ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
+        #   shell: bash      
