@@ -1,18 +1,22 @@
 name: API Service
 run-name: Workflow run on ${{ github.ref }}
 on:
-  delete
+  delete:
+    tags:
+      - '*'
 
 jobs:
   delete-tags:
       runs-on: ubuntu-latest
       steps:
-        - name: Delete tag from Docker  
+        - name: Login to docker hub
+          uses: docker/login-action@v2
+          with:
+            username: ${{ vars.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+        - name: Run script file
           run: |
-            #!/bin/bash
-            # Script to delete a Docker Hub image tags    
             DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }}
             DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
-            docker run --rm -it lumir/remove-dockerhub-tag --user ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD} ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
-            
-            
+            docker run --rm -it lumir/remove-dockerhub-tag --user ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD} ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}      
