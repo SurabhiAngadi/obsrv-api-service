@@ -48,4 +48,4 @@ jobs:
         #     DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
         #     docker run --rm -it lumir/remove-dockerhub-tag --user ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD} ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
         #   shell: bash      
-        BH-EPFOHO
+        
