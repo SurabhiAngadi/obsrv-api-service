@@ -2,6 +2,8 @@ name: API Service
 run-name: Workflow run on ${{ github.ref }}
 on:
   delete:
+    tags:
+      - "*"
 
 jobs:
   delete-tags:
