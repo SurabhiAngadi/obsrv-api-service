@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - "*"
-  delete:
   workflow_dispatch:
     inputs:
       aws-deploy:
@@ -24,22 +23,9 @@ jobs:
         run: |
           (echo -n TRIGGER_ALLOWED= && echo 'print("${{ github.ref_name }}".split("_")[0] not in "${{ vars.CURRENT_RELEASE }}")' | python3) >> "$GITHUB_OUTPUT" 
 
-  delete-tags:
-    needs: verify-tag
-    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: alesharik/delete-old-docker-tags@v0.0.2
-        with:
-          registry: https://registry.url
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: ${{ vars.DOCKERHUB_USERNAME }}
-          version-extractor: '[\s\S]'
-
   build-api-service-image:
     needs: verify-tag
-    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.input.delete-tag != 'True'
+    if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True'
     runs-on: ubuntu-latest
     steps:
       - name: Login to docker hub
