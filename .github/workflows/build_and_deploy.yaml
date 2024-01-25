@@ -35,7 +35,7 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           repository: ${{ vars.DOCKERHUB_USERNAME }}
-          version-extractor: '*'
+          version-extractor: '[\s\S]'
 
   build-api-service-image:
     needs: verify-tag
