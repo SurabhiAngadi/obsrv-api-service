@@ -37,5 +37,5 @@ jobs:
             echo $TOKEN 
             
             # Get the image digest
-            DIGEST=$(curl -sS -H "Authorization: Bearer $(curl -sS -H "Content-Type: application/json" -X POST -d '{"username": "'${UNAME}'", "password": "'${UPASS}'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)" -H "Accept: application/vnd.docker.distribution.manifest.v2+json" https://hub.docker.com/v2/repositories/${REPO_NAME}/${IMAGE_NAME}/manifests/${TAG_NAME} | jq -r .config.digest)
+            DIGEST=$(curl -sS -H "Authorization: Bearer $(curl -H "Content-Type: application/json" -X POST -d '{"username": "'${UNAME}'", "password": "'${UPASS}'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)" -H "Accept: application/vnd.docker.distribution.manifest.v2+json" https://hub.docker.com/v2/repositories/${REPO_NAME}/${IMAGE_NAME}/manifests/${TAG_NAME} | jq -r .config.digest)
             echo $DIGEST
