@@ -28,7 +28,7 @@ jobs:
           run: |
             UNAME="${{ vars.DOCKERHUB_USERNAME }}"
             UPASS="${{ secrets.DOCKERHUB_PASSWORD }}"
-            REPO_NAME="${{ vars.DOCKERHUB_USERNAME }}"
+            REPO_NAME="${{ vars.DOCKERHUB_USERNAME   }}"
             IMAGE_NAME="obsrv-api-service"
             TAG_NAME=release-1.4-alpha
             
