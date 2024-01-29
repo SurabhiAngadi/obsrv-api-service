@@ -37,5 +37,5 @@ jobs:
             # Get the image digest
             DIGEST=$(curl -sS -H "Authorization: Bearer ${TOKEN}" -H "Accept: application/vnd.docker.distribution.manifest.v2+json" https://hub.docker.com/v2/repositories/${REPO_NAME}/${IMAGE_NAME}/manifests/${TAG_NAME} | jq .config.digest)
           
-            # Delete the image
-            curl -sS -X DELETE -H "Authorization: Bearer ${TOKEN}" https://hub.docker.com/v2/repositories/${REPO_NAME}/${IMAGE_NAME}/manifests/${DIGEST}
+            # # Delete the image
+            # curl -sS -X DELETE -H "Authorization: Bearer ${TOKEN}" https://hub.docker.com/v2/repositories/${REPO_NAME}/${IMAGE_NAME}/manifests/${DIGEST}
