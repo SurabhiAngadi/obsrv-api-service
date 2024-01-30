@@ -32,13 +32,12 @@ jobs:
           TAG=${{ github.ref }}
         
           #Authenticate
-          TOKEN='$(curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
+          TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
                       -d '{"username": "'"$USERNAME"'","password": "'"$PASSWORD"'"}'\
-                      "https://hub.docker.com/v2/users/login/" | jq -r '.token')'
-          echo "Token: $TOKEN"
+                      "https://hub.docker.com/v2/users/login/" | jq -r '.token')
         
           #Delete tag
-          response='$(curl "https://hub.docker.com/v2/repositories/$USERNAME/$IMAGE_NAME/tags/$TAG/" -X DELETE -H "Authorization: JWT ${TOKEN}")'
+          response=$(curl "https://hub.docker.com/v2/repositories/$USERNAME/$IMAGE_NAME/tags/$TAG/" -X DELETE -H "Authorization: JWT ${TOKEN}")
         
           message=$(echo "$response" | jq -r '.message')
           if [ "$message" == "httperror 404: tag not found" ]
