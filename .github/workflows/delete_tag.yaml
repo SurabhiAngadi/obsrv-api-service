@@ -1,7 +1,6 @@
 name: API Service
 run-name: Workflow run on ${{ github.ref_name }}
-on:
-  delete:
+on: delete
 
 
 jobs:
