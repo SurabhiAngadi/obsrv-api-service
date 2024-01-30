@@ -1,5 +1,5 @@
 name: API Service
-run-name: Workflow run on ${{ github.ref }}
+run-name: Workflow run on ${{ github.ref_name }}
 on:
   delete:
     tags:
@@ -31,18 +31,5 @@ jobs:
           PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
           TAG=${{ github.ref }}
         
-          #Authenticate
-          TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
-                      -d '{"username": "'"$USERNAME"'","password": "'"$PASSWORD"'"}'\
-                      "https://hub.docker.com/v2/users/login/" | jq -r '.token')
-        
-          #Delete tag
-          response=$(curl "https://hub.docker.com/v2/repositories/$USERNAME/$IMAGE_NAME/tags/$TAG/" -X DELETE -H "Authorization: JWT ${TOKEN}")
-        
-          message=$(echo "$response" | jq -r '.message')
-          if [ "$message" == "httperror 404: tag not found" ]
-            then
-              echo "Tag not found: $response"
-          else
-            echo "Tag deleted successsfully."
-          fi
+          echo "${USERNAME}"
+          echo "${PASSWORD}"
