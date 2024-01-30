@@ -29,10 +29,13 @@ jobs:
           #!/bin/bash
           USERNAME=${{ vars.DOCKERHUB_USERNAME }}
           PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
-          TAG=${{ github.ref }}
+          TAG=${{ github.ref_name }}
           
           #Authenticate
           TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
                       -d '{"username": "'"$USERNAME"'","password": "'"$PASSWORD"'"}'\
                       "https://hub.docker.com/v2/users/login/" | jq -r '.token')
           echo  "Token: ${TOKEN}"
+
+          #Delete tag
+          response=$(curl "https://hub.docker.com/v2/repositories/$USERNAME/$IMAGE_NAME/tags/$TAG/" -X DELETE -H "Authorization: JWT ${TOKEN}")
