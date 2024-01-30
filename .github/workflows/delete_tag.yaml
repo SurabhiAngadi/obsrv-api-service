@@ -28,7 +28,8 @@ jobs:
           USERNAME=${{ vars.DOCKERHUB_USERNAME }}
           PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
           IMAGE_NAME=obsrv-api-service
-          TAG=test-delete-tag-action-13
+          # TAG=test-delete-tag-action-13
+          TAG=${{ github.ref_name }}
           
           #Authenticate
           TOKEN=$(curl -vvv -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
