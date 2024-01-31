@@ -6,7 +6,7 @@ on:
 jobs:
   delete-tags:
     runs-on: ubuntu-latest
-    if: github.event_name == 'delete' && github.event.ref_type == 'tag'
+    if: github.event_name == 'delete'
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -28,9 +28,9 @@ jobs:
           USERNAME=${{ vars.DOCKERHUB_USERNAME }}
           PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
           IMAGE_NAME=obsrv-api-service
-          TAG=test-delete-tag-action-18
-          # TAG=${{ github.ref_name }}
-          echo "Ref type: ${{ github.event.ref_type }}"
+          # TAG=test-delete-tag-action-18
+          TAG=${{ github.event.ref }}
+          # echo "Ref type: ${{ github.event.ref_type }}"
           #Authenticate
           TOKEN=$(curl -vvv -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
                       -d '{"username": "'"$USERNAME"'","password": "'"$PASSWORD"'"}'\
