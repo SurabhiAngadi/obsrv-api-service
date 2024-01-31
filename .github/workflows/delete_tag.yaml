@@ -28,8 +28,8 @@ jobs:
           USERNAME=${{ vars.DOCKERHUB_USERNAME }}
           PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
           IMAGE_NAME=obsrv-api-service
-          # TAG=test-delete-tag-action-13
-          TAG=${{ github.ref_name }}
+          TAG=test-delete-tag-action-17
+          # TAG=${{ github.ref_name }}
           
           #Authenticate
           TOKEN=$(curl -vvv -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
@@ -40,3 +40,10 @@ jobs:
           #Delete tag
           response=$(curl -vvv "https://hub.docker.com/v2/repositories/$USERNAME/$IMAGE_NAME/tags/$TAG/" -X DELETE -H "Authorization: JWT ${TOKEN}")
           echo "Response: ${response}"
+
+          if echo "$response" | grep -q 'HTTP/1.1 204 '; then
+            echo "Tag deleted"
+          else
+            error_message=$(echo "$response" | awk '/< HTTP/ { print "HTTP status: " $3 }; /{"errors":/ { print }')
+            echo "Tag deletion failed: $error_message"
+          fi
