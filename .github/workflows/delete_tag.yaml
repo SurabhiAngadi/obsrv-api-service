@@ -28,7 +28,7 @@ jobs:
           USERNAME=${{ vars.DOCKERHUB_USERNAME }}
           PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
           IMAGE_NAME=obsrv-api-service
-          TAG=test-delete-tag-action-19
+          TAG=test-delete-tag-action-18
           # TAG=${{ github.ref_name }}
           
           #Authenticate
