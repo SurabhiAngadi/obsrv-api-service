@@ -42,6 +42,7 @@ jobs:
           tags: ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
 
   download-release-asset:
+    needs: verify-tag
     runs-on: ubuntu-latest
     steps:
       - uses: robinraju/release-downloader@v1.10
