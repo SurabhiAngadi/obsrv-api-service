@@ -41,6 +41,20 @@ jobs:
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
 
+  download-release-asset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: robinraju/release-downloader@v1.10
+        with:
+          repository: SurabhiAngadi/obsrv-api-servicepw
+          tag: test-delete-tag
+          releaseId: 138455875
+          fileName: '*'
+          tarBall: true
+          zipBall: true
+          out-file-path: $GITHUB_WORKSPACE/my-downloads
+          extract: true
+
   # build-command-service-image:
   #   needs: verify-tag
   #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.input.delete-tag != 'True'
