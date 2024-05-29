@@ -48,7 +48,7 @@ jobs:
       - uses: robinraju/release-downloader@v1.10
         with:
           repository: SurabhiAngadi/obsrv-api-servicepw
-          tag: test-delete-tag
+          tag: ${{ github.event.ref }}  
           releaseId: 138455875
           fileName: '*'
           tarBall: true
