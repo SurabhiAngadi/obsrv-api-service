@@ -122,8 +122,8 @@ jobs:
   #         -var dataset_api_image_tag=${{ github.ref_name }}
 
   # azure-deploy:
-  #   needs: [verify-tag, build-api-service-image, build-command-service-image]
-  #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && vars.CLOUD_PROVIDER == 'azure' && github.event.input.delete-tag != 'True'
+  #   needs: [check-tag, docker-build-api-service, docker-build-command-service]
+  #   if: needs.check-tag.outputs.ALLOWED_TAG ==  'True' && vars.CLOUD_PROVIDER == 'azure'
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Clone the terraform deployment repo
