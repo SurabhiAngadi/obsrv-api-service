@@ -41,26 +41,44 @@ jobs:
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/obsrv-api-service:${{ github.ref_name }}
 
-  # docker-build-command-service:
-  #   needs: check-tag
-  #   if: needs.check-tag.outputs.ALLOWED_TAG ==  'True'
+  download-release-asset:
+    needs: verify-tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: robinraju/release-downloader@v1.10
+        with:
+          repository: SurabhiAngadi/obsrv-api-servicepw
+          tag: test-delete-tag
+          releaseId: 138455875
+          fileName: '*'
+          tarBall: true
+          zipBall: true
+          out-file-path: $GITHUB_WORKSPACE/my-downloads
+          extract: true
+
+  # build-command-service-image:
+  #   needs: verify-tag
+  #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.input.delete-tag != 'True'
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Login to docker hub
-  #       uses: docker/login-action@v1
+  #       uses: docker/login-action@v2
   #       with:
   #         username: ${{ vars.DOCKERHUB_USERNAME }}
   #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
   #     - name: Build docker image and push
-  #       uses: docker/build-push-action@v2
+  #       uses: docker/build-push-action@v4
   #       with:
-  #         file: ./command-service/Dockerfile  
+  #         context: ./command-service
+  #         platforms: linux/amd64  
   #         push: true
   #         tags: ${{ vars.DOCKERHUB_USERNAME }}/flink-command-service:${{ github.ref_name }}
 
   # aws-deploy:
-  #   needs: [check-tag, docker-build-api-service, docker-build-command-service]
-  #   if: needs.check-tag.outputs.ALLOWED_TAG ==  'True'
+  #   needs: [verify-tag, build-api-service-image, build-command-service-image]
+  #   if: needs.verify-tag.outputs.ALLOWED_TAG ==  'True' && github.event.inputs.aws-deploy == 'true' && github.event.input.delete-tag != 'True'
   #   runs-on: ubuntu-latest
   #   environment: aws-dev
   #   steps:
